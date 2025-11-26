@@ -57,8 +57,6 @@
             color: #bda6c7;
             font-size: 0.95em;
         }
-    </style>
-    <style>
         /* Mini game styles */
         .game-container {
             margin: 32px auto 0 auto;
@@ -97,7 +95,30 @@
 <body>
     <div class="container">
         <h1>🐾 Meet Pusheen! 🐾</h1>
-        <img class="pusheen-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4eNdj1Lkg3NcTo5oRFDr1ZhsgvkCu4sDqBg&s" alt="Pusheen the Cat">
+        <div style="display: flex; justify-content: center;">
+            <svg id="cutePusheen" width="220" height="160" viewBox="0 0 220 160" style="margin-bottom: 1em;">
+                <!-- Body -->
+                <ellipse cx="110" cy="90" rx="80" ry="60" fill="#b0aeb1" stroke="#6d4c7d" stroke-width="3"/>
+                <!-- Head -->
+                <ellipse cx="110" cy="60" rx="50" ry="40" fill="#b0aeb1" stroke="#6d4c7d" stroke-width="3"/>
+                <!-- Left Ear -->
+                <polygon points="70,35 80,10 90,35" fill="#b0aeb1" stroke="#6d4c7d" stroke-width="3"/>
+                <!-- Right Ear -->
+                <polygon points="130,35 140,10 150,35" fill="#b0aeb1" stroke="#6d4c7d" stroke-width="3"/>
+                <!-- Cute Eyes -->
+                <ellipse id="eyeL" cx="90" cy="65" rx="8" ry="12" fill="#fff" stroke="#6d4c7d" stroke-width="2"/>
+                <ellipse id="eyeR" cx="130" cy="65" rx="8" ry="12" fill="#fff" stroke="#6d4c7d" stroke-width="2"/>
+                <ellipse id="pupilL" cx="90" cy="70" rx="3" ry="4" fill="#6d4c7d"/>
+                <ellipse id="pupilR" cx="130" cy="70" rx="3" ry="4" fill="#6d4c7d"/>
+                <!-- Sparkle in eyes -->
+                <ellipse id="sparkleL" cx="92" cy="68" rx="1.2" ry="1.2" fill="#fff"/>
+                <ellipse id="sparkleR" cx="132" cy="68" rx="1.2" ry="1.2" fill="#fff"/>
+                <!-- Nose -->
+                <ellipse cx="110" cy="75" rx="5" ry="3" fill="#6d4c7d"/>
+                <!-- Smile -->
+                <path d="M105 80 Q110 85 115 80" stroke="#6d4c7d" stroke-width="2" fill="none"/>
+            </svg>
+        </div>
         <p>Pusheen is a chubby, gray tabby cat who loves snacks, naps, and adventures with friends!<br>
         She brings smiles and cuteness wherever she goes. 😺💖</p>
         <button class="btn" onclick="alert('Meow! 🐾 Pusheen loves you!')">Pet Pusheen</button>
@@ -154,6 +175,35 @@
     document.body.style.cursor = 'none';
     document.addEventListener('mousemove', (e) => {
         pusheenCursor.style.transform = `translate(${e.clientX - 30}px, ${e.clientY - 30}px)`;
+    });
+    // Pusheen SVG eyes follow cursor
+    const svg = document.getElementById('cutePusheen');
+    const eyeL = document.getElementById('eyeL');
+    const eyeR = document.getElementById('eyeR');
+    const pupilL = document.getElementById('pupilL');
+    const pupilR = document.getElementById('pupilR');
+    svg.addEventListener('mousemove', (e) => e.stopPropagation());
+    document.addEventListener('mousemove', (e) => {
+        // SVG position
+        const rect = svg.getBoundingClientRect();
+        // Eye centers
+        const eyeLCenter = {x: rect.left + 90, y: rect.top + 65};
+        const eyeRCenter = {x: rect.left + 130, y: rect.top + 65};
+        // Mouse
+        const mx = e.clientX, my = e.clientY;
+        // Move pupils toward mouse, max 4px offset
+        function movePupil(eyeCenter, pupil, baseX, baseY) {
+            const dx = mx - eyeCenter.x;
+            const dy = my - eyeCenter.y;
+            const dist = Math.min(4, Math.sqrt(dx*dx + dy*dy)/10);
+            const angle = Math.atan2(dy, dx);
+            const px = baseX + Math.cos(angle)*dist;
+            const py = baseY + Math.sin(angle)*dist;
+            pupil.setAttribute('cx', px);
+            pupil.setAttribute('cy', py);
+        }
+        movePupil(eyeLCenter, pupilL, 90, 70);
+        movePupil(eyeRCenter, pupilR, 130, 70);
     });
     </script>
 </body>
