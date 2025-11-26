@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusheen the Cat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8e1f4 0%, #f6f7d7 100%);
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff8fc;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(180, 140, 200, 0.15);
+            padding: 32px 24px;
+            text-align: center;
+        }
+        h1 {
+            color: #a678b4;
+            font-size: 2.5rem;
+            margin-bottom: 0.5em;
+        }
+        .pusheen-img {
+            width: 220px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(166, 120, 180, 0.12);
+            margin-bottom: 1em;
+        }
+        p {
+            color: #6d4c7d;
+            font-size: 1.2rem;
+            margin-bottom: 1.5em;
+        }
+        .btn {
+            background: #a678b4;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 32px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(166, 120, 180, 0.08);
+        }
+        .btn:hover {
+            background: #d1a6e0;
+        }
+        .footer {
+            margin-top: 2em;
+            color: #bda6c7;
+            font-size: 0.95em;
+        }
+    </style>
+    <style>
+        /* Mini game styles */
+        .game-container {
+            margin: 32px auto 0 auto;
+            background: #f6f7d7;
+            border-radius: 18px;
+            box-shadow: 0 2px 10px rgba(166, 120, 180, 0.08);
+            padding: 20px 10px 30px 10px;
+            max-width: 350px;
+            text-align: center;
+        }
+        .treat {
+            width: 48px;
+            height: 48px;
+            position: absolute;
+            transition: top 0.3s, left 0.3s;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .score {
+            font-size: 1.2em;
+            color: #a678b4;
+            margin-bottom: 10px;
+        }
+        /* Pusheen cursor effect */
+        .pusheen-cursor {
+            position: fixed;
+            pointer-events: none;
+            width: 60px;
+            height: 60px;
+            z-index: 9999;
+            transition: transform 0.08s linear;
+            will-change: transform;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐾 Meet Pusheen! 🐾</h1>
+        <img class="pusheen-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4eNdj1Lkg3NcTo5oRFDr1ZhsgvkCu4sDqBg&s" alt="Pusheen the Cat">
+        <p>Pusheen is a chubby, gray tabby cat who loves snacks, naps, and adventures with friends!<br>
+        She brings smiles and cuteness wherever she goes. 😺💖</p>
+        <button class="btn" onclick="alert('Meow! 🐾 Pusheen loves you!')">Pet Pusheen</button>
+        <div class="game-container" id="game">
+            <div class="score" id="score">Score: 0</div>
+            <p>Catch the treats for Pusheen! 🍪</p>
+        </div>
+        <div class="footer">Fan site &copy; 2025 | Art & character &copy; Pusheen Corp</div>
+    </div>
+    <img src="https://pusheen.com/wp-content/themes/pusheen-custom/img/home-pusheen.png" class="pusheen-cursor" id="pusheenCursor" style="display:none;">
+    <script>
+    // Mini game: Catch the treat
+    const game = document.getElementById('game');
+    const scoreDisplay = document.getElementById('score');
+    let score = 0;
+    let treat = null;
+    function randomPosition() {
+        const minX = game.offsetLeft + 10;
+        const minY = game.offsetTop + 60;
+        const maxX = minX + game.offsetWidth - 60;
+        const maxY = minY + game.offsetHeight - 60;
+        return {
+            x: Math.floor(Math.random() * (maxX - minX)) + minX,
+            y: Math.floor(Math.random() * (maxY - minY)) + minY
+        };
+    }
+    function spawnTreat() {
+        if (treat) treat.remove();
+        treat = document.createElement('img');
+        treat.src = 'https://em-content.zobj.net/source/microsoft-teams/337/cookie_1f36a.png';
+        treat.className = 'treat';
+        const pos = randomPosition();
+        treat.style.left = pos.x + 'px';
+        treat.style.top = pos.y + 'px';
+        treat.onclick = () => {
+            score++;
+            scoreDisplay.textContent = 'Score: ' + score;
+            spawnTreat();
+        };
+        document.body.appendChild(treat);
+    }
+    // Start game after DOM loads
+    window.addEventListener('DOMContentLoaded', () => {
+        spawnTreat();
+    });
+    // Remove treat on resize to avoid misplacement
+    window.addEventListener('resize', () => {
+        if (treat) treat.remove();
+        spawnTreat();
+    });
+    // Pusheen cursor effect
+    const pusheenCursor = document.getElementById('pusheenCursor');
+    pusheenCursor.style.display = 'block';
+    document.body.style.cursor = 'none';
+    document.addEventListener('mousemove', (e) => {
+        pusheenCursor.style.transform = `translate(${e.clientX - 30}px, ${e.clientY - 30}px)`;
+    });
+    </script>
+</body>
+</html>
